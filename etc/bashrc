@@ -15,7 +15,7 @@ fi
 # Colors ----------------------------------------------------------
 export TERM=xterm-color
 export GREP_OPTIONS='--color=auto' GREP_COLOR='1;32'
-export CLICOLOR=1 
+export CLICOLOR=1
 
 if [ "$OS" = "linux" ] ; then
   alias ls='ls --color=auto' # For linux, etc
@@ -53,7 +53,7 @@ export HISTCONTROL=ignoredups
 export HISTFILESIZE=3000
 export HISTIGNORE="ls:cd:[bf]g:exit:..:...:ll:lla"
 alias h=history
-hf(){ 
+hf(){
   grep "$@" ~/.bash_history
 }
 
@@ -77,8 +77,8 @@ if [ $IS_INTERACTIVE = 'true' ] ; then # Interactive shell only
 
   # Completion -------------------------------------------------------
 
-  # Turn on advanced bash completion if the file exists 
-  # Get it here: http://www.caliban.org/bash/index.shtml#completion) or 
+  # Turn on advanced bash completion if the file exists
+  # Get it here: http://www.caliban.org/bash/index.shtml#completion) or
   # on OSX: sudo port install bash-completion
   if [ -f /etc/bash_completion ]; then
       . /etc/bash_completion
@@ -91,38 +91,35 @@ if [ $IS_INTERACTIVE = 'true' ] ; then # Interactive shell only
   source ~/cl/bin/git-completion.bash
 
   # Add completion to source and .
-  complete -F _command source 
+  complete -F _command source
   complete -F _command .
 
 
-
   # Prompts ----------------------------------------------------------
-  #git_dirty_flag() {
-    #git status 2> /dev/null | grep -c : | awk '{if ($1 > 0) print "⚡"}'
-  #}
+  git_dirty_flag() {
+    git status 2> /dev/null | grep -c : | awk '{if ($1 > 0) print " ⚡"}'
+  }
 
   prompt_func() {
       previous_return_value=$?;
-      if [ $IS_REMOTE = 'true' ] ; then
-        prompt="\[\033]0;${USER} ${PWD}\007\]\[${COLOR_PURPLE}\]\w\[${COLOR_GRAY}\]$(__git_ps1)\[${COLOR_NC}\] "
-      else
-        prompt="\[\033]0;${USER} ${PWD}\007\]\[${COLOR_GREEN}\]\w\[${COLOR_GRAY}\]$(__git_ps1)\[${COLOR_NC}\] "
-      fi
+      #prompt="\[\033]0;${USER} ${PWD}\007\]\[${COLOR_GREEN}\]\w\[${COLOR_GRAY}\]$(__git_ps1)\[${COLOR_NC}\] "
       #prompt="\033]0;${PWD}\007\[${COLOR_GREEN}\]\w\[${COLOR_GRAY}\]$(__git_ps1)\[${COLOR_NC}\] "
-      #prompt="\[${COLOR_GREEN}\]\w\[${COLOR_GRAY}\]$(__git_ps1)\[${COLOR_YELLOW}\]$(git_dirty_flag)\[${COLOR_NC}\] "
+      prompt="\[${COLOR_BLUE}\]@ \[${COLOR_GREEN}\]${PWD}\[${COLOR_GRAY}\]$(__git_ps1)\[${COLOR_YELLOW}\]$(git_dirty_flag)\[${COLOR_NC}\] "
+
+      arrow="\[${COLOR_BLUE}\]>\[${COLOR_NC}\]"
 
       if test $previous_return_value -eq 0
       then
-          PS1="${prompt}> "
+          PS1="${prompt}\n${arrow} "
       else
-          PS1="${prompt}\[${COLOR_RED}\]> \[${COLOR_NC}\]"
+          PS1="${prompt}\[${COLOR_RED}\]\n${arrow} "
       fi
   }
   PROMPT_COMMAND=prompt_func
 
   # export PS1="\[${COLOR_GREEN}\]\w\[${COLOR_NC}\] > "  # Primary prompt with only a path
   # export PS1="\[${COLOR_RED}\]\w > \[${COLOR_NC}\]"  # Primary prompt with only a path, for root, need condition to use this for root
-  # export PS1="\[${COLOR_GRAY}\]\u@\h \[${COLOR_GREEN}\]\w > \[${COLOR_NC}\]"  # Primary prompt with user, host, and path 
+  # export PS1="\[${COLOR_GRAY}\]\u@\h \[${COLOR_GREEN}\]\w > \[${COLOR_NC}\]"  # Primary prompt with user, host, and path
   # This runs before the prompt and sets the title of the xterm* window.  If you set the title in the prompt
   # weird wrapping errors occur on some systems, so this method is superior
   #export PROMPT_COMMAND='echo -ne "\033]0;${PWD##*/} ${USER}@${HOSTNAME%%.*}"; echo -ne "\007"'  # user@host path
@@ -133,17 +130,16 @@ if [ $IS_INTERACTIVE = 'true' ] ; then # Interactive shell only
 
   function xtitle {  # change the title of your xterm* window
     unset PROMPT_COMMAND
-    echo -ne "\033]0;$1\007" 
+    echo -ne "\033]0;$1\007"
   }
 
 fi
 
 
-
 # Navigation -------------------------------------------------------
 alias ..='cd ..'
 alias ...='cd .. ; cd ..'
-cl() { cd $1; ls -la; } 
+cl() { cd $1; ls -la; }
 
 source ~/cl/bin/bashmarks.sh
 
@@ -169,7 +165,7 @@ fi
 # Security ---------------------------------------------------------
 
 # Folder shared by a group
-# chmod g+s directory 
+# chmod g+s directory
 #find /foo -type f -print | xargs chmod g+rw,o-rwx,u+rw
 #find /foo -type d -print | xargs chmod g+rwxs,o-rwx,u+rwx
 
@@ -185,14 +181,14 @@ findportuser() {
 
 findhosts(){
   nmap -sP -n -oG - "$1"/24 | grep "Up" | awk '{print $2}' -
-  echo "To scan those do: nmap $1-254" 
-  echo "To scan and OS detect those do: sudo nmap -O $1-254" 
+  echo "To scan those do: nmap $1-254"
+  echo "To scan and OS detect those do: sudo nmap -O $1-254"
   echo "To intensly scan one do: sudo nmap -sV -vv -PN $1"
 }
 
 monitor_traffic(){
   # install ngrep with sudo port install ngrep
-  sudo ngrep -W byline -qld en1 "$1" 
+  sudo ngrep -W byline -qld en1 "$1"
 }
 
 
@@ -206,7 +202,7 @@ alias lla='ls -lah'
 # Search
 # Use ack for grepping and find if ack is available
 # sudo port install p5-app-ack
-if type -P ack &>/dev/null ; then 
+if type -P ack &>/dev/null ; then
   g(){
     ack "$*" --all-types --color-match=green --color-filename=blue --smart-case
   }
@@ -269,7 +265,7 @@ killhard() {
 # Ruby ----------------------------------------------------
 
 # RVM
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" 
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
 # Fixes problems with sending email in ruby
 export RUBYOPT="-r openssl"
@@ -281,7 +277,7 @@ if [ $IS_INTERACTIVE = 'true' ] ; then
   source ~/.bashrc_help
 
   source ~/cl/bin/mq/mq.sh # MySQL tools
-  source ~/cl/bin/rr/rr.sh # Rails tools
+#  source ~/cl/bin/rr/rr.sh # Rails tools
   source ~/cl/bin/gt/gt.sh # Git tools
   source ~/cl/bin/sv/sv.sh # SVN tools
 fi
@@ -292,9 +288,13 @@ fi
 
 
 
-# Test ------------------------------------------------------------------------ 
+# Test ------------------------------------------------------------------------
 
 #if [ "$OS" = "linux" ] ; then
 #elif
 #else
 #fi
+
+export PATH=$HOME/local/bin:$HOME/local/node/bin:$PATH
+
+alias slt='open -a "Sublime Text 2"'
