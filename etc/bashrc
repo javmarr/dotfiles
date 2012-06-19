@@ -268,9 +268,11 @@ killhard() {
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
 # Fixes problems with sending email in ruby
-export RUBYOPT="-r openssl"
-
-
+if echo $rvm_ruby_version | grep -q '1.9'; then
+  export RUBYOPT='-r openssl'
+else
+  export RUBYOPT=
+fi
 
 # Bring in the other files ----------------------------------------------------
 if [ $IS_INTERACTIVE = 'true' ] ; then
