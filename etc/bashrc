@@ -100,11 +100,20 @@ if [ $IS_INTERACTIVE = 'true' ] ; then # Interactive shell only
     git status 2> /dev/null | grep -c : | awk '{if ($1 > 0) print " ⚡"}'
   }
 
+  gtm_status() {
+    gtm status &> /dev/null
+    local status=$?
+    if [ $status -eq 0 ]; then
+      gtm status
+    fi
+  }
+
   prompt_func() {
       previous_return_value=$?;
       #prompt="\[\033]0;${USER} ${PWD}\007\]\[${COLOR_GREEN}\]\w\[${COLOR_GRAY}\]$(__git_ps1)\[${COLOR_NC}\] "
       #prompt="\033]0;${PWD}\007\[${COLOR_GREEN}\]\w\[${COLOR_GRAY}\]$(__git_ps1)\[${COLOR_NC}\] "
       prompt="\[${COLOR_BLUE}\]@ \[${COLOR_GREEN}\]${PWD}\[${COLOR_GRAY}\]$(__git_ps1)\[${COLOR_YELLOW}\]$(git_dirty_flag)\[${COLOR_NC}\] "
+      #prompt="${prompt}$(gtm_status)"
       host="\[${COLOR_LIGHT_BLUE}\]${HOSTNAME%%.*}"
       arrow="\[${COLOR_BLUE}\]>\[${COLOR_NC}\]"
 
